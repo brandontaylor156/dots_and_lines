@@ -1,0 +1,153 @@
+body{
+    background: linear-gradient(#E66465, #9198E5);
+    height: 100%;
+    background-repeat: no-repeat;
+    background-size: cover;
+    font-family: Bouncy;
+
+}
+
+a:link, a:visited {
+  color: blue;
+  text-decoration: none;
+}
+
+#mydiv {
+    font-variant: small-caps;
+    text-align: center;
+    font-size: 60px;
+    padding-top: 10px;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1;
+}
+
+#dot 
+{
+    width: 10px;
+    height: 10px;
+}
+
+#horizontalLine, #verticalLine
+{
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    cursor: pointer;
+    transition: all .2s ease-in-out;
+}
+
+#horizontalLine:hover, #verticalLine:hover
+{
+    background-color: #CCC;
+    transform: scale(1.1);
+}
+
+@keyframes color-change 
+{
+    0% {
+      background-color: blue;
+    }
+    10% {
+      background-color: #8e44ad;
+    }
+    20% {
+      background-color: #1abc9c;
+    }
+    30% {
+      background-color: #d35400;
+    }
+    40% {
+      background-color: blue;
+    }
+    50% {
+      background-color: #34495e;
+    }
+    60% {
+      background-color: blue;
+    }
+    70% {
+      background-color: #2980b9;
+    }
+    80% {
+      background-color: #f1c40f;
+    }
+    90% {
+      background-color: #2980b9;
+    }
+    100% {
+      background-color: pink;
+    }
+}
+
+#myTable
+{
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+    text-align: center;
+    border-spacing: 0;
+    table-layout: fixed;
+    padding-top: 30px;
+}
+
+#myTable td
+{
+    width: 40px;
+    height: 40px;
+    padding: 0;
+}
+
+@font-face {
+    font-family: Bouncy;
+    src: url(Bouncy-Thin.otf);
+}
+
+@font-face {
+    font-family: Digital;
+    src: url(digital.ttf);
+}
+
+#form1
+{
+    line-height: 1.5;
+}
+
+#playerOne, #playerTwo
+{
+    position: absolute;
+    z-index: 1;
+    visibility: show;
+    top: 20%;
+    font-family: Digital;
+    font-size: 50px;
+}
+
+#turn
+{
+    position: absolute;
+    z-index: 1;
+    visibility: show;
+    top: 40%;
+    font-family: Digital;
+    font-size: 50px;
+    left: 10%;
+}
+
+#playerOne
+{
+    left: 10%;
+}
+
+#playerTwo
+{
+    right: 10%;
+}
+
+#scoreOne, #scoreTwo
+{
+    font-family: Digital;
+    font-size: 90px;
+    text-align: center;
+}

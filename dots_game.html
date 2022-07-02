@@ -1,0 +1,391 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Let's Play: Dots and Lines</title>
+    <link rel="stylesheet" href="dots_game.css">
+</head>
+<script>
+    var totalRows = 5;
+    var cellsInRow = 6;
+    var playerOneColor = playerTwoColor = "";
+    var numBlueSquares = numRedSquares = 0;
+    var playerOneScore = playerTwoScore = 0;
+    var sameTurn = secondTurn = validSpace = false;
+    
+    function createTable()
+    {
+        var newTable = document.createElement("table");
+        newTable.setAttribute("id", "myTable");
+        document.body.appendChild(newTable);
+
+        for (var r = 0; r < (totalRows*2)-1; r++)
+        {
+            var row = document.createElement("tr");
+            document.getElementById("myTable").appendChild(row);
+
+            for (var c = 0; c < (cellsInRow*2)-1; c++)
+            {
+                var str1 = r.toString();
+                var str2 = c.toString();
+                var res = str1.concat(str2);
+
+                document.getElementsByTagName("tr")[r].setAttribute("id", "row")
+    
+                var cell = document.createElement("td");
+                cell.id = res;
+
+                var t = document.createElement("img");
+
+                if ((r % 2 == 0) && (c % 2 == 0))
+                {
+                    t.setAttribute("src", "black_dot.png")
+                    t.setAttribute("id", "dot");
+                }
+                else if ((r % 2 == 0) && (c % 2 == 1))
+                {
+                    t.setAttribute("src", "horizontal_line_black.png")
+                    t.setAttribute("id", "horizontalLine");
+                }
+                else if ((r % 2 == 1) && (c % 2 == 0))
+                {
+                    t.setAttribute("src", "vertical_line_black.png")
+                    t.setAttribute("id", "verticalLine");
+                }
+                else
+                {
+                    t.setAttribute("src", "white_square.jpg")
+                    t.setAttribute("id", "dot");
+                }
+
+                cell.appendChild(t);
+
+                document.getElementsByTagName("tr")[r].appendChild(cell);
+                document.getElementById("myTable").rows[r].cells.item(c).value = "";
+            }
+        }
+    }
+
+    async function move(rowNum, cellNum)
+    {
+        
+        if (currentPlayer == "blue")
+        {
+            if (document.getElementById("myTable").rows[rowNum].cells[cellNum].innerHTML == "<img src=" + '"' + "horizontal_line_black.png" + '"' + " id=" + '"' + "horizontalLine" + '">')
+            {
+                document.getElementById("turn").innerHTML = "Turn: Red";
+                document.getElementById("myTable").rows[rowNum].cells.item(cellNum).innerHTML = "<img src=" + '"' + "horizontal_line_blue.png" + '"' + " id=" + '"' + "horizontalLine" + '">';
+                document.getElementById("myTable").rows[rowNum].cells.item(cellNum).value = "blue";
+                document.getElementById("sound1").play();
+                checkSquares();
+                validSpace = true;
+            }
+            else if (document.getElementById("myTable").rows[rowNum].cells[cellNum].innerHTML == "<img src=" + '"' + "vertical_line_black.png" + '"' + " id=" + '"' + "verticalLine" + '">')
+            {
+                document.getElementById("turn").innerHTML = "Turn: Red";
+                document.getElementById("myTable").rows[rowNum].cells.item(cellNum).innerHTML = "<img src=" + '"' + "vertical_line_blue.png" + '"' + " id=" + '"' + "verticalLine" + '">';
+                document.getElementById("myTable").rows[rowNum].cells.item(cellNum).value = "blue";
+                document.getElementById("sound1").play();
+                checkSquares();
+                validSpace = true;
+            }
+        }
+        else if (currentPlayer == "red")
+        {
+            if (document.getElementById("myTable").rows[rowNum].cells[cellNum].innerHTML == "<img src=" + '"' + "horizontal_line_black.png" + '"' + " id=" + '"' + "horizontalLine" + '">')
+            {
+                document.getElementById("turn").innerHTML = "Turn: Blue";
+                document.getElementById("myTable").rows[rowNum].cells.item(cellNum).innerHTML = "<img src=" + '"' + "horizontal_line_red.png" + '"' + " id=" + '"' + "horizontalLine" + '">';
+                document.getElementById("myTable").rows[rowNum].cells.item(cellNum).value = "red";
+                document.getElementById("sound2").play();
+                checkSquares();
+                validSpace = true;
+            }
+            else if (document.getElementById("myTable").rows[rowNum].cells[cellNum].innerHTML == "<img src=" + '"' + "vertical_line_black.png" + '"' + " id=" + '"' + "verticalLine" + '">')
+            {
+                document.getElementById("turn").innerHTML = "Turn: Blue";
+                document.getElementById("myTable").rows[rowNum].cells.item(cellNum).innerHTML = "<img src=" + '"' + "vertical_line_red.png" + '"' + " id=" + '"' + "verticalLine" + '">';
+                document.getElementById("myTable").rows[rowNum].cells.item(cellNum).value = "red";
+                document.getElementById("sound2").play();
+                checkSquares();
+                validSpace = true;
+            }
+        }
+
+        if (cpu == true && secondTurn == false && validSpace == true && (numRedSquares + numBlueSquares) != (totalRows-1)*(cellsInRow-1))
+        {
+            var i = Math.floor(Math.random() * ((totalRows * 2)-1));
+            var j = Math.floor(Math.random() * ((cellsInRow * 2)-1));
+
+            while  (document.getElementById("myTable").rows[i].cells.item(j).value != "" ||
+                   (document.getElementById("myTable").rows[i].cells.item(j).innerHTML == "<img src=" + '"' + "black_dot.png" + '"' + " id=" + '"' + "dot" + '">' ||
+                    document.getElementById("myTable").rows[i].cells.item(j).value == "blue" || 
+                    document.getElementById("myTable").rows[i].cells.item(j).value == "red" ||
+                    document.getElementById("myTable").rows[i].cells.item(j).innerHTML == "<img src=" + '"' + "white_square.jpg" + '"' + " id=" + '"' + "dot" + '">' ||
+                    document.getElementById("myTable").rows[i].cells.item(j).innerHTML == "<img src=" + '"' + "red_square.png" + '"' + " id=" + '"' + "dot" + '">' ||
+                    document.getElementById("myTable").rows[i].cells.item(j).innerHTML == "<img src=" + '"' + "blue_square.png" + '"' + " id=" + '"' + "dot" + '">'))
+            {
+                i = Math.floor(Math.random() * ((totalRows * 2)-1));
+                j = Math.floor(Math.random() * ((cellsInRow * 2)-1));
+            }
+
+            secondTurn = true;
+
+            await sleep(300);
+            move(i,j);
+        }
+        secondTurn = validSpace = false;
+    }
+
+    function makeMove(rowNum, cellNum)
+    {
+        return function()
+        {
+            move(rowNum, cellNum);
+        }
+    }
+
+    function checkSquares()
+    {
+        for (var i = 0; i < (totalRows*2)-2; i++)
+        {
+            for (var j = 1; j < (cellsInRow*2)-2; j++)
+            {
+                var inner = document.getElementById("myTable").rows[i].cells.item(j).innerHTML;
+                var innerVal = document.getElementById("myTable").rows[i].cells.item(j).value;
+
+                if (inner == "<img src=" + '"' + "horizontal_line_blue.png" + '"' + " id=" + '"' + "horizontalLine" + '">' ||
+                    inner == "<img src=" + '"' + "horizontal_line_red.png" + '"' + " id=" + '"' + "horizontalLine" + '">')
+                {
+                    if (
+                        (innerVal != "" &&
+                         document.getElementById("myTable").rows[i+2].cells.item(j).value != "" &&
+                         document.getElementById("myTable").rows[i+1].cells.item(j+1).value != "" &&
+                         document.getElementById("myTable").rows[i+1].cells.item(j-1).value != ""))
+                        {
+                            if (currentPlayer == "blue" && document.getElementById("myTable").rows[i+1].cells.item(j).innerHTML != "<img src=" + '"' + "blue_square.png" + '"' + " id=" + '"' + "dot" + '">'
+                                && document.getElementById("myTable").rows[i+1].cells.item(j).innerHTML != "<img src=" + '"' + "red_square.png" + '"' + " id=" + '"' + "dot" + '">')
+                            {
+                                document.getElementById("myTable").rows[i+1].cells.item(j).innerHTML = "<img src=" + '"' + "blue_square.png" + '"' + " id=" + '"' + "dot" + '">';
+                                numBlueSquares++;
+                                document.getElementById("oneUp").play();
+                            }
+                            else if (currentPlayer == "red" && document.getElementById("myTable").rows[i+1].cells.item(j).innerHTML != "<img src=" + '"' + "blue_square.png" + '"' + " id=" + '"' + "dot" + '">'
+                                && document.getElementById("myTable").rows[i+1].cells.item(j).innerHTML != "<img src=" + '"' + "red_square.png" + '"' + " id=" + '"' + "dot" + '">')
+                            {
+                                document.getElementById("myTable").rows[i+1].cells.item(j).innerHTML = "<img src=" + '"' + "red_square.png" + '"' + " id=" + '"' + "dot" + '">';
+                                numRedSquares++;
+                                document.getElementById("oneUp").play();
+                            }
+                        }
+                }
+            }
+        }
+        switchPlayers();
+        if (playerOneColor == "blue")
+        {
+            document.getElementById("scoreOne").innerHTML = numBlueSquares;
+            document.getElementById("scoreTwo").innerHTML = numRedSquares;
+           
+        }
+        else if (playerOneColor == "red")
+        {
+            document.getElementById("scoreOne").innerHTML = numRedSquares;
+            document.getElementById("scoreTwo").innerHTML = numBlueSquares;
+        }
+        checkForWin();
+    }
+
+    function switchPlayers()
+    {
+        if (sameTurn == false)
+        {
+            if (currentPlayer == "blue")
+            {
+                currentPlayer = "red";
+            }
+            else if (currentPlayer == "red")
+            {   
+                currentPlayer = "blue";
+            }
+        }
+        sameTurn = false;
+    }
+
+    function checkForWin()
+    {
+        if ((numRedSquares + numBlueSquares) == (totalRows-1)*(cellsInRow-1))
+        {
+            if (numRedSquares > numBlueSquares)
+            {
+                if (playerOneColor == "red")
+                    alert("Player One Wins!");
+                else
+                    alert("Player Two Wins!");
+            }
+            else if (numBlueSquares > numRedSquares)
+            {
+                if (playerOneColor == "blue")
+                    alert("Player One Wins!");
+                else
+                    alert("Player Two Wins!");
+            }
+            else
+                alert("Draw");
+        }
+    }
+
+    function pickPlayerOneColor()
+    {
+        playerOneColor = currentPlayer = document.getElementById("mySelect3").value;
+
+        if (playerOneColor == "blue")
+        {
+            playerTwoColor = "red";
+            document.getElementById("scoreOne").setAttribute("style", "color: blue");
+            document.getElementById("scoreTwo").setAttribute("style", "color: red");
+            document.getElementById("turn").innerHTML = "Turn: Blue";
+        }
+        else
+        {
+            playerTwoColor = "blue";
+            document.getElementById("scoreOne").setAttribute("style", "color: red");
+            document.getElementById("scoreTwo").setAttribute("style", "color: blue");
+            document.getElementById("turn").innerHTML = "Turn: Red";
+        }
+    }
+
+    function selectPlayType()
+    {
+        if (document.getElementById("mySelect2").value == "1")
+        {
+            cpu = false;
+        }
+        else
+        {
+            cpu = true;
+        }
+    }
+
+    function playGame()
+    {
+        for (var i = 0; i < (totalRows*2)-1; i++)
+        {
+            for (var j = 0; j < (cellsInRow*2)-1; j++)
+            {
+                document.getElementById("myTable").rows[i].cells[j].onclick = makeMove(i,j);
+            }
+        }
+
+    }
+
+    function startGame()
+    {
+        resetGame();
+        document.getElementById("startSound").loop = true;
+        document.getElementById("startSound").play();
+        document.getElementById("start").play();
+        chooseDimensions();
+        selectPlayType();
+        pickPlayerOneColor();
+        createTable();
+        playGame();
+    }
+
+    function chooseDimensions()
+    {
+        if(document.getElementById("myTable"))
+            document.getElementById("myTable").remove();
+        
+        if (document.getElementById("mySelect").value != "1")
+            totalRows = cellsInRow = document.getElementById("mySelect").value;
+        else
+        {
+            totalRows = 5;
+            cellsInRow = 6;
+        }
+    }
+
+    function resetGame()
+    {
+        playerOneColor = playerTwoColor = "";
+        numBlueSquares = numRedSquares = 0;
+        playerOneScore = playerTwoScore = 0;
+        sameTurn = false;
+        document.getElementById("scoreOne").innerHTML = 0;
+        document.getElementById("scoreTwo").innerHTML = 0;
+    }
+
+    function sleep(ms)
+    {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+</script>
+
+<body>
+    <div id="mySidenav" class="sidenav">
+          <a href='../index.html'>Home</a>
+          <a href="../dots/dots_game.html">Game</a>
+          <a href="../XML_XSLT/assignment.xml">XML/XSLT</a>
+          <a href="../bootstrap/index.html">Bootstrap</a>
+          <a href="../tic_tac_toe/tic_tac_toe.html">Tic Tac Toe</a>
+          <a href="../restaurant/main.html">Restaurant</a>
+        
+      </div>
+    
+    <audio id="startSound"><source src="Spongebob.mp3"/></audio>
+    <audio id="oneUp"><source src="oneUp.wav" /></audio>
+    <audio id="sound1"><source src="yah.wav" /></audio>
+    <audio id="sound2"><source src="yahoo.wav" /></audio>
+    <audio id="start"><source src="start.wav" /></audio>
+
+    <div id="mydiv">
+        Dots & Lines
+    </div>
+
+    <div id = "playerOne">
+        Player One Score
+        <div id = "scoreOne"></div>
+    </div>
+
+    <div id = "playerTwo">
+        Player Two Score
+        <div id = "scoreTwo"></div>
+    </div>
+
+    <div id = "turn"></div>
+
+    <form id="form1">
+        Select Board Dimensions:
+        <select id="mySelect">
+          <option value="1">5 x 6</option>
+          <option value="2">2 x 2</option>
+          <option value="3">3 x 3</option>
+          <option value="4">4 x 4</option>
+          <option value="5">5 x 5</option>
+          <option value="6">6 x 6</option>
+          <option value="7">7 x 7</option>
+          <option value="8">8 x 8</option>
+          <option value="9">9 x 9</option>
+          <option value="10">10 x 10</option>
+        </select>
+        <br>
+        Select Play Type:
+        <select id="mySelect2">
+          <option value="1">Player vs. Player</option>
+          <option value="2">Player vs. CPU</option>
+        </select>
+        <br>
+        Player One Color:
+        <select id="mySelect3">
+          <option value="blue">Blue</option>
+          <option value="red">Red</option>
+        </select>
+        <br>
+        <input type="button" onclick="startGame()" value="OK">
+    </form>
+
+</body>
+</html>
